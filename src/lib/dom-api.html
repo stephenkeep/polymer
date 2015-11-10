@@ -593,6 +593,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     };
 
+    Object.defineProperties(DomApi.prototype, {
+      activeElement: {
+        get: function() {
+          var ownerDocument = this.node.ownerDocument;
+          var trueDocument = ownerDocument || this.node;
+
+          // Native, non-document ShadowRoot?
+          if (this.node.host && ownerDocument && !window.ShadowDOMPolyfill && !this.node._isShadyRoot) {
+            return this.node.activeElement;
+          }
+
+          // Not even ShadowRoot-like?
+          if (!this.node.host && ownerDocument) {
+            return this.node.activeElement;
+          }
+
+          var active = trueDocument.activeElement;
+          if (!active) return null;
+          if (window.ShadowDOMPolyfill) active = ShadowDOMPolyfill.wrap(active);
+
+          var activeRoot = Polymer.dom(active).getOwnerRoot();
+          while (activeRoot && activeRoot !== this.node) {
+            active = activeRoot.host;
+            activeRoot = Polymer.dom(active).getOwnerRoot();
+          }
+
+          return (!ownerDocument ? !activeRoot : activeRoot === this.node) ? active : null;
+        },
+        configurable: true
+      }
+    });
+
     // changes and accessors...
     if (!Settings.useShadow) {
 

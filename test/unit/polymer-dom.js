@@ -753,6 +753,109 @@ suite('Polymer.dom accessors', function() {
     assert.equal(testElement.children.length, 3);
   });
 
+  suite('Polymer.dom activeElement', function() {
+    var r_ownerDocument;
+    var r;
+    var r_0;
+    var r_0_0;
+    var r_0_1;
+    var r_1;
+    var r_1_0;
+    var r_1_1;
+    /*
+      r
+        (shadow root)
+          + r_0
+          | (shadow root)
+          |   + r_0_0
+          |   + r_0_1
+          + r_1
+            (shadow root)
+              + r_1_0
+              + r_1_1
+    */
+
+    suiteSetup(function() {
+      r = Polymer.dom(document).querySelector('x-shadow-host-root');
+      r_ownerDocument = r.ownerDocument;
+      r_0 = Polymer.dom(r.root).querySelector('x-shadow-host-root-0');
+      r_0_0 = Polymer.dom(r_0.root).querySelector('x-shadow-host-root-0-0');
+      r_0_1 = Polymer.dom(r_0.root).querySelector('x-shadow-host-root-0-1');
+      r_1 = Polymer.dom(r.root).querySelector('x-shadow-host-root-1');
+      r_1_0 = Polymer.dom(r_1.root).querySelector('x-shadow-host-root-1-0');
+      r_1_1 = Polymer.dom(r_1.root).querySelector('x-shadow-host-root-1-1');
+    });
+
+    teardown(function() {
+      assert.equal(Polymer.dom(r_0_0.root).activeElement, null, 'r_0_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_0_1.root).activeElement, null, 'r_0_1.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1_0.root).activeElement, null, 'r_1_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1_1.root).activeElement, null, 'r_1_1.root.activeElement === null');
+    });
+
+    test('r.focus()', function() {
+      r.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, null, 'r.root.activeElement === null');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, null, 'r_1.root.activeElement === null');
+    });
+
+    test('r_0.focus()', function() {
+      r_0.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_0, 'r.root.activeElement === r_0');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, null, 'r_1.root.activeElement === null');
+    });
+
+    test('r_0_0.focus()', function() {
+      r_0_0.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_0, 'r.root.activeElement === r_0');
+      assert.equal(Polymer.dom(r_0.root).activeElement, r_0_0, 'r_0.root.activeElement === r_0_0');
+      assert.equal(Polymer.dom(r_1.root).activeElement, null, 'r_1.root.activeElement === null');
+    });
+
+    test('r_0_1.focus()', function() {
+      r_0_1.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_0, 'r.root.activeElement === r_0');
+      assert.equal(Polymer.dom(r_0.root).activeElement, r_0_1, 'r_0.root.activeElement === r_0_1');
+      assert.equal(Polymer.dom(r_1.root).activeElement, null, 'r_1.root.activeElement === null');
+    });
+
+    test('r_1.focus()', function() {
+      r_1.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, null, 'r_1.root.activeElement === null');
+    });
+
+    test('r_1_0.focus()', function() {
+      r_1_0.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, r_1_0, 'r_1.root.activeElement === r_1_0');
+    });
+
+    test('r_1_1.focus()', function() {
+      r_1_1.focus();
+
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, r_1_1, 'r_1.root.activeElement === r_1_1');
+    });
+  });
 });
 
 suite('Polymer.dom non-distributed elements', function() {
