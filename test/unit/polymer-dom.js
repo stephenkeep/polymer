@@ -855,6 +855,38 @@ suite('Polymer.dom accessors', function() {
       assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
       assert.equal(Polymer.dom(r_1.root).activeElement, r_1_1, 'r_1.root.activeElement === r_1_1');
     });
+
+    test('setting activeElement on document has no effect', function() {
+      r_1_1.focus();
+
+      Polymer.dom(r_ownerDocument).activeElement = "abc";
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, r_1_1, 'r_1.root.activeElement === r_1_1');
+    });
+
+    test('setting activeElement on a shadow root has no effect', function() {
+      r_1_1.focus();
+
+      Polymer.dom(r_1.root).activeElement = "abc";
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, r_1_1, 'r_1.root.activeElement === r_1_1');
+    });
+
+    test('setting activeElement on a non-shadow root has no effect, but the property is accessible from the node', function() {
+      r_1_1.focus();
+
+      Polymer.dom(r_1).activeElement = "abc";
+      assert.equal(Polymer.dom(r_ownerDocument).activeElement, r, 'document.activeElement === r');
+      assert.equal(Polymer.dom(r.root).activeElement, r_1, 'r.root.activeElement === r_1');
+      assert.equal(Polymer.dom(r_0.root).activeElement, null, 'r_0.root.activeElement === null');
+      assert.equal(Polymer.dom(r_1.root).activeElement, r_1_1, 'r_1.root.activeElement === r_1_1');
+
+      assert.equal(Polymer.dom(r_1).activeElement, "abc", 'document.activeElement === r');
+    });
   });
 });
 

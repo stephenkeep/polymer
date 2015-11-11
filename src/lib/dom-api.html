@@ -604,14 +604,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return this.node.activeElement;
           }
 
-          // Not even ShadowRoot-like?
+          // Not ShadowRoot-like?
           if (!this.node.host && ownerDocument) {
             return this.node.activeElement;
           }
 
           var active = trueDocument.activeElement;
           if (!active) return null;
-          if (window.ShadowDOMPolyfill) active = ShadowDOMPolyfill.wrap(active);
+
+          if (window.ShadowDOMPolyfill) {
+            active = ShadowDOMPolyfill.wrap(active);
+          }
 
           var activeRoot = Polymer.dom(active).getOwnerRoot();
           while (activeRoot && activeRoot !== this.node) {
@@ -620,6 +623,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
 
           return (!ownerDocument ? !activeRoot : activeRoot === this.node) ? active : null;
+        },
+        set: function(value) {
+          var ownerDocument = this.node.ownerDocument;
+          var trueDocument = ownerDocument || this.node;
+
+          // Native, non-document ShadowRoot?
+          if (this.node.host && ownerDocument && !window.ShadowDOMPolyfill && !this.node._isShadyRoot) {
+            return;
+          }
+
+          // Not ShadowRoot-like?
+          if (!this.node.host && ownerDocument) {
+            this.node.activeElement = value;
+          }
         },
         configurable: true
       }
